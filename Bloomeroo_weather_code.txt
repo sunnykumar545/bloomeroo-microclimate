@@ -1,12 +1,11 @@
 
-Step 1
-
+#Step 1
 Create the database and table 
 
 createdb weatherdb
 create table weather_records
  
-We first create a PostgreSQL table to hold the sensor data.
+#We first create a PostgreSQL table to hold the sensor data.
 
 CREATE TABLE IF NOT EXISTS weather_records (
     device_id VARCHAR(50) NOT NULL,
@@ -25,8 +24,8 @@ CREATE TABLE IF NOT EXISTS weather_records (
     PRIMARY KEY (device_id, time)
 );
 
-Step 2 
-Fetch Data from the API
+#Step 2 
+#Fetch Data from the API
 
 import os, requests
 from datetime import datetime
@@ -59,9 +58,8 @@ def fetch_weather(device_id, lat, lon):
         "relativeHumadity": data["main"]["humidity"],
         "atmosphericpressure": data["main"]["pressure"]
            }
-Step 3
-
-Connect to PostgreSQL using environment variable 
+#Step 3
+#Connect to PostgreSQL using environment variable 
 
 def get_connection():
     return psycopg2.connect(
@@ -72,11 +70,7 @@ def get_connection():
         port=os.getenv("PORT", port)
     )
 
-
-Insert Data into Database
-
-
-
+#Insert Data into Database
 import execute_values
 import os
 
@@ -104,8 +98,8 @@ for r in records]
     cur.close()
     conn.close()
 
-Step 4 
-We merge the two parts together into a loader that fetches data for multiple devices/locations.
+#Step 4 
+#We merge the two parts together into a loader that fetches data for multiple devices/locations.
 
 import fetch_weather
 import insert_records
@@ -125,8 +119,8 @@ def run_etl(devices):
         insert_records(records)
         print(f"Inserted {lenn(records)} records.")
 
-Step 5 
-Run the program by setting up env var
+#Step 5 
+#Run the program by setting up env var
  API_KEY=api key
    DB_HOST=localhost
    DB_USER= dbuser
@@ -134,8 +128,9 @@ Run the program by setting up env var
    DB_NAME=weatherdb
    DB_PORT=1111
 
-step 6 :
-Run the main python file run_etl.py
+#step 6 :
+#Run the main python file run_etl.py
+
 
 
 
