@@ -1,0 +1,141 @@
+
+Step 1
+
+Create the database and table 
+
+createdb weatherdb
+create table weather_records
+ 
+We first create a PostgreSQL table to hold the sensor data.
+
+CREATE TABLE IF NOT EXISTS weather_records (
+    device_id VARCHAR(50) NOT NULL,
+    time TIMESTAMP NOT NULL,
+    sensor_location VARCHAR(255),
+    latlong VARCHAR(100),
+    minimumwindDirection FLOAT,
+    AvgWindDirection FLOAT,
+    MaximumWindDirection FLOAT,
+    maximumwindspeed FLOAT,
+    avgwindspeed FLOAT,
+    Gustwindspeed FLOAT,
+    AirTemperature FLOAT,
+    relativeHumadity FLOAT,
+    AtmosphericPressure FLOAT
+    PRIMARY KEY (device_id, time)
+);
+
+Step 2 
+Fetch Data from the API
+
+import os, requests
+from datetime import datetime
+
+API_KEY = os.getenv("API_KEY")
+BASE_URL = weather api url 
+def fetch_weather(device_id, lat, lon):
+    params = {
+        "lat": lat,
+        "lon": lon,
+        "units": "metric",
+        "appid": API_KEY
+    }
+    response = requests.get(BASE_URL, params=params)
+    response.raise_for_status()
+    data = response.json()
+    
+    # Map API output into required schema fields
+    return {
+        "device_id": device_id,
+        "time": datetime.timestamp(data["dt"]),
+        "sensor_location": data.get("name", "Unknown"),
+        "latlong": f"{lat},{lon}",
+        "minimumwinddirec": data["wind"].get("deg"),
+        "avgwindirec": data["wind"].get("deg"),
+        "maximumwinddirec": data["wind"].get("deg"),
+        "maximumwindspeed": data["wind"].get("speed"),
+        "avgwindspeed": data["wind"].get("speed"),       
+        "Airtemp": data["main"]["temp"],
+        "relativeHumadity": data["main"]["humidity"],
+        "atmosphericpressure": data["main"]["pressure"]
+           }
+Step 3
+
+Connect to PostgreSQL using environment variable 
+
+def get_connection():
+    return psycopg2.connect(
+        host=os.getenv("HOST"),
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        dbname=os.getenv("DB_NAME"),
+        port=os.getenv("PORT", port)
+    )
+
+
+Insert Data into Database
+
+
+
+import execute_values
+import os
+
+def insert_records(records):
+    conn = get_connecion()
+    cur = conn.cursor()
+    query = """
+        INSERT INTO weather_records (
+            device_id, time, sensor_location, latlong,
+            minimumwinddirec, avgwindirec, maximumwinddirec,
+            maximumwindspeed, avgwindspeed,Airtemp, relativeHumadity, atmosphericpressure
+        ) VALUES %s
+        on conflict (device_id, time) do nothing;
+    """
+    values = [(
+        r["device_id"], r["time"], r["sensor_location"], r["latlong"],
+        r["minimumwinddirec"], r["avgwindirec"], r["maximumwinddirec"],
+        r["maximumwindspeed"], r["avgwindspeed"], r["Airtemp"], r["relativeHumadity"], r["atmosphericpressure"]
+    ) 
+
+for r in records]
+
+    execute_values(cur, query, values)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+Step 4 
+We merge the two parts together into a loader that fetches data for multiple devices/locations.
+
+import fetch_weather
+import insert_records
+
+def run_etl(devices):
+    """
+    devices: list of (device_id, lat, lon)
+    """
+    records = []
+    for device_id, lat, lon in devices:
+        try:
+            record = fetch_weather(device_id, lat, lon)
+            records.apped(record)
+        except Exception as e:
+            print(f"Error fetching {device_id} ({lat},{lon}): {e}")
+    if records:
+        insert_records(records)
+        print(f"Inserted {lenn(records)} records.")
+
+Step 5 
+Run the program by setting up env var
+ API_KEY=api key
+   DB_HOST=localhost
+   DB_USER= dbuser
+   DB_PASS=password
+   DB_NAME=weatherdb
+   DB_PORT=1111
+
+step 6 :
+Run the main python file run_etl.py
+
+
+
