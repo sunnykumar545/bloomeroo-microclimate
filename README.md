@@ -21,13 +21,13 @@ How to Run the Program:
 Download the Python script (fetch_data.py)  and .env file into a folder location.
 
 1.Setup the Environment variable for DB Connection.
-  >> Update your DB connection Details in the .env file
-  >> Place the .env file in the same folder location as that of main python file (fetch_data.py)
+ >> Update your DB connection Details in the .env file
+ >> Place the .env file in the same folder location as that of main python file (fetch_data.py)
 
 2. Setup Python Libraries
    >> In the command Prompt, check the Python version and install the below psycopg2-binary and requests libraries for  database and HTTP calls. 
-   >> pip install psycopg2-binary requests
-   >> pip install python-dotenv
+    >> pip install psycopg2-binary requests
+    >> pip install python-dotenv
 3. Run the Python script from command Line 
    cd <Folder Location >
    py fetch_data.py
