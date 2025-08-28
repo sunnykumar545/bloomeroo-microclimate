@@ -33,6 +33,14 @@ Download the Python script (fetch_data.py)  and .env file into a folder location
    cd <Folder Location >
    py fetch_data.py
 
+--Test Case--
+Tested seperately the test.py code to fetch the records from api and it worked.
+With this same test code, I also tested the env variable file parameter API_URL by passing the URL provided in the scenario and it worked properly.
+Path : https://data.melbourne.vic.gov.au/api/explore/v2.1/catalog/datasets/microclimate-sensors-data/records?limit=20
+Uploading the test.py code as well.
+change the limit value in the url and run the test.py code from comand prompt and it will retun same number of records.
+(place the test.py file in the same directory)
+
 
 
 
