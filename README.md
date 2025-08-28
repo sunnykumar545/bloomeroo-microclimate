@@ -4,6 +4,7 @@ My approch to the solution consist of three parts
 
 Part 1 : Test the API, fetch data from API and print the data.
 Script : fetch_data.py
+Note: API only fetches 100 records
 
 Part 2: Setup the Database to store the Data 
 
